@@ -444,7 +444,7 @@ const SpatialLabs = () => {
                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </button>
                 <p className="mt-4 text-xs font-mono text-gray-500 text-center md:text-right">
-                    LIMITED AVAILABILITY Q1 2025
+                    LIMITED AVAILABILITY Q1 2026
                 </p>
             </div>
           </div>
@@ -458,8 +458,9 @@ const SpatialLabs = () => {
                 <a href="#" className="hover:text-white">GITHUB</a>
                 <a href="#" className="hover:text-white">LINKEDIN</a>
             </div>
-            <div>
+            <div className="flex items-center gap-2">
                 © 2025 SPATIAL LABS INC. ALL SYSTEMS NOMINAL.
+                <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
             </div>
           </div>
       </footer>
