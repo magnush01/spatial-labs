@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Terminal, ArrowRight, Box, Layers, Zap, Cpu, Globe, ChevronRight, CheckCircle, FileJson, Loader } from 'lucide-react';
 import WorkflowModelViewer from './components/WorkflowModelViewer';
 import PromptWindow from './components/PromptWindow';
+import WaitlistModal from './components/WaitlistModal';
+import WorkflowDiagram from './components/WorkflowDiagram';
 
 /**
  * HERO CANVAS
@@ -334,7 +336,7 @@ const WorkflowShowcase = () => {
     <section className="py-40 border-b border-white/10 bg-black overflow-hidden relative">
       <div className="max-w-7xl mx-auto px-6">
         <div className="mb-12 md:mb-20 text-center">
-          <h2 className="text-3xl md:text-5xl font-bold mb-4">Agentic Workflow</h2>
+          <h2 className="text-3xl md:text-5xl font-bold mb-4">Generative 3D</h2>
           <p className="text-gray-400">From text prompt to manufacturable IFC file in seconds.</p>
         </div>
 
@@ -411,6 +413,7 @@ const WorkflowShowcase = () => {
  */
 const SpatialLabs = () => {
   const [intensity, setIntensity] = useState(0);
+  const [isWaitlistOpen, setIsWaitlistOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-black text-white font-sans selection:bg-white selection:text-black overflow-x-hidden">
@@ -426,9 +429,12 @@ const SpatialLabs = () => {
             <a href="#" className="hover:text-white transition-colors">RESEARCH</a>
             <a href="#" className="hover:text-white transition-colors">API</a>
             <a href="#" className="hover:text-white transition-colors">COMPANY</a>
-            <a href="#" className="text-white border border-white/20 px-4 py-1 hover:bg-white hover:text-black transition-all">
+            <button
+              onClick={() => setIsWaitlistOpen(true)}
+              className="text-white border border-white/20 px-4 py-1 hover:bg-white hover:text-black transition-all"
+            >
               ACCESS
-            </a>
+            </button>
           </div>
         </div>
       </nav>
@@ -476,14 +482,10 @@ const SpatialLabs = () => {
       {/* NEW: AGENTIC WORKFLOW SHOWCASE */}
       <WorkflowShowcase />
 
-      {/* LOGO STRIP */}
-      <section className="py-12 border-b border-white/10 bg-white/[0.02]">
-        <div className="max-w-7xl mx-auto px-6 flex flex-wrap justify-center md:justify-between items-center gap-8 opacity-40 grayscale hover:grayscale-0 transition-all duration-500">
-          {['EPFL', 'FOSTER+PARTNERS', 'NVIDIA', 'TUM ARCH', 'OMA'].map((logo) => (
-            <span key={logo} className="text-lg font-bold font-mono tracking-widest">{logo}</span>
-          ))}
-        </div>
-      </section>
+      {/* NEW: WORKFLOW DIAGRAM */}
+      <WorkflowDiagram />
+
+
 
       {/* FEATURE GRID */}
       <section className="py-24 md:py-32">
@@ -525,8 +527,10 @@ const SpatialLabs = () => {
         </div>
       </section>
 
+
+
       {/* BIG CTA */}
-      <section className="py-32 border-t border-white/10 bg-white text-black">
+      <section id="waitlist" className="py-32 border-t border-white/10 bg-white text-black">
         <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-start md:items-end gap-12">
           <div>
             <h2 className="text-6xl md:text-8xl font-bold tracking-tighter mb-6">
@@ -538,7 +542,10 @@ const SpatialLabs = () => {
             </p>
           </div>
           <div className="w-full md:w-auto">
-            <button className="group flex items-center justify-between w-full md:w-96 px-8 py-6 bg-black text-white hover:bg-gray-900 transition-all">
+            <button
+              onClick={() => setIsWaitlistOpen(true)}
+              className="group flex items-center justify-between w-full md:w-96 px-8 py-6 bg-black text-white hover:bg-gray-900 transition-all"
+            >
               <span className="font-mono text-lg tracking-wider">REQUEST ACCESS</span>
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </button>
@@ -563,6 +570,8 @@ const SpatialLabs = () => {
           </div>
         </div>
       </footer>
+
+      <WaitlistModal isOpen={isWaitlistOpen} onClose={() => setIsWaitlistOpen(false)} />
 
     </div>
   );
