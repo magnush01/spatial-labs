@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Terminal, ArrowRight } from 'lucide-react';
+import { track } from '@vercel/analytics/react';
 
 const PromptWindow = ({ onPromptUpdate }) => {
     const [promptText, setPromptText] = useState("");
@@ -30,7 +31,7 @@ const PromptWindow = ({ onPromptUpdate }) => {
 
     // 2. Simulated Typing Effect (Optional - for demo purposes)
     useEffect(() => {
-        const demoPrompt = "Neue National Galerie by Mies Van der Rohe";
+        const demoPrompt = "Design a brutalist high-rise tower with raw concrete facade";
         let typeTimeout;
         let thinkInterval;
 
@@ -121,6 +122,7 @@ const PromptWindow = ({ onPromptUpdate }) => {
                             value={promptText}
                             readOnly
                             placeholder="Enter prompt..."
+                            onFocus={() => track('prompt_focus')}
                             className="bg-transparent border-none outline-none w-full font-mono text-sm text-white placeholder:text-gray-700"
                         />
                         {isTyping && <div className="w-2 h-5 bg-white animate-pulse" />}
@@ -132,7 +134,10 @@ const PromptWindow = ({ onPromptUpdate }) => {
                             <span>Model: MCG-1</span>
                             <span>Thinking: {thinkingTime}s</span>
                         </div>
-                        <button className="bg-white text-black p-2 hover:bg-gray-200 transition-colors">
+                        <button
+                            onClick={() => track('prompt_submit', { textLength: promptText.length })}
+                            className="bg-white text-black p-2 hover:bg-gray-200 transition-colors"
+                        >
                             <ArrowRight className="w-4 h-4" />
                         </button>
                     </div>
