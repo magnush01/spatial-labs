@@ -268,9 +268,37 @@ const WorkflowShowcase = () => {
   const [displayedText, setDisplayedText] = useState("");
   const [logs, setLogs] = useState([]);
   const [layers, setLayers] = useState({ core: true, facade: true });
+  const [isVisible, setIsVisible] = useState(false);
+  const sectionRef = useRef(null);
 
-  // Workflow Timeline
+  // Intersection Observer to detect when section is visible
   useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !isVisible) {
+          setIsVisible(true);
+        }
+      },
+      {
+        threshold: 0.2, // Trigger when 20% of the section is visible
+      }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => {
+      if (sectionRef.current) {
+        observer.unobserve(sectionRef.current);
+      }
+    };
+  }, [isVisible]);
+
+  // Workflow Timeline - only runs when visible
+  useEffect(() => {
+    if (!isVisible) return;
+
     const fullText = "Design a mid-rise HQ with sustainable facade...";
     let timer;
 
@@ -331,10 +359,10 @@ const WorkflowShowcase = () => {
 
     runSequence();
     return () => clearTimeout(timer);
-  }, []);
+  }, [isVisible]);
 
   return (
-    <section className="py-40 border-b border-white/10 bg-black overflow-hidden relative">
+    <section ref={sectionRef} className="py-40 border-b border-white/10 bg-black overflow-hidden relative">
       <div className="max-w-7xl mx-auto px-6">
         <div className="mb-12 md:mb-20 text-center">
           <h2 className="text-3xl md:text-5xl font-bold mb-4">Generative 3D</h2>

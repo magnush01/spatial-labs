@@ -51,7 +51,7 @@ const WorkflowDiagram = () => {
 
                 {/* Main Workflow */}
                 <div className="relative bg-[#0A0A0A] border border-white/10 p-8 pb-24">
-                    <div className="flex items-center justify-center gap-0 flex-wrap lg:flex-nowrap relative z-20">
+                    <div className="flex flex-col lg:flex-row items-center justify-center gap-4 lg:gap-0 relative z-20">
 
                         {/* INPUTS */}
                         <div className="relative z-10">
@@ -106,7 +106,7 @@ const WorkflowDiagram = () => {
                     viewport={{ once: true }}
                     className="relative bg-[#0A0A0A] border border-white/10 border-t-0 p-6 z-20"
                 >
-                    <div className="flex items-center justify-between gap-4">
+                    <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 lg:gap-4">
                         <div className="flex items-center gap-3">
                             <motion.div
                                 className="p-2 bg-white/5 border border-white/10"
@@ -121,22 +121,22 @@ const WorkflowDiagram = () => {
                             </div>
                         </div>
 
-                        {/* Agents aligned with nodes above */}
-                        <div className="flex items-center gap-[140px] mr-[40px] relative">
+                        {/* Agents - stacked on mobile, aligned horizontally on desktop */}
+                        <div className="flex flex-col lg:flex-row items-start lg:items-center gap-3 lg:gap-[140px] lg:mr-[40px] relative w-full lg:w-auto">
                             {/* Connecting lines background */}
-                            <div className="absolute -top-6 left-0 w-full h-px bg-transparent" />
+                            <div className="absolute -top-6 left-0 w-full h-px bg-transparent hidden lg:block" />
 
-                            <div className="relative">
+                            <div className="relative w-full lg:w-auto">
                                 <AgentBadge label="STRUCTURAL" active={step >= 3} />
                                 {step >= 3 && <ActiveConnectionIndicator />}
                             </div>
 
-                            <div className="relative">
+                            <div className="relative w-full lg:w-auto">
                                 <AgentBadge label="AESTHETIC" active={step >= 5} />
                                 {step >= 5 && <ActiveConnectionIndicator />}
                             </div>
 
-                            <div className="relative">
+                            <div className="relative w-full lg:w-auto">
                                 <AgentBadge label="COMPLIANCE" active={step >= 7} />
                                 {step >= 7 && <ActiveConnectionIndicator />}
                             </div>
@@ -188,25 +188,49 @@ const ParticleStream = ({ active, width = 100 }) => {
     }));
 
     return (
-        <div
-            className="relative h-px bg-white/10 overflow-hidden hidden lg:block -mx-px"
-            style={{ width }}
-        >
-            {active && particles.map((p) => (
-                <motion.div
-                    key={p.id}
-                    className="absolute top-1/2 -translate-y-1/2 w-1 h-1 bg-white rounded-full shadow-[0_0_8px_rgba(255,255,255,0.8)]"
-                    initial={{ x: -10, opacity: 0 }}
-                    animate={{ x: width + 10, opacity: [0, 1, 1, 0] }}
-                    transition={{
-                        duration: 0.6,
-                        repeat: Infinity,
-                        delay: p.delay,
-                        ease: "linear"
-                    }}
-                />
-            ))}
-        </div>
+        <>
+            {/* Vertical stream for mobile */}
+            <div
+                className="relative w-px bg-white/10 overflow-hidden lg:hidden"
+                style={{ height: 60 }}
+            >
+                {active && particles.map((p) => (
+                    <motion.div
+                        key={`v-${p.id}`}
+                        className="absolute left-1/2 -translate-x-1/2 w-1 h-1 bg-white rounded-full shadow-[0_0_8px_rgba(255,255,255,0.8)]"
+                        initial={{ y: -10, opacity: 0 }}
+                        animate={{ y: 70, opacity: [0, 1, 1, 0] }}
+                        transition={{
+                            duration: 0.6,
+                            repeat: Infinity,
+                            delay: p.delay,
+                            ease: "linear"
+                        }}
+                    />
+                ))}
+            </div>
+
+            {/* Horizontal stream for desktop */}
+            <div
+                className="relative h-px bg-white/10 overflow-hidden hidden lg:block -mx-px"
+                style={{ width }}
+            >
+                {active && particles.map((p) => (
+                    <motion.div
+                        key={`h-${p.id}`}
+                        className="absolute top-1/2 -translate-y-1/2 w-1 h-1 bg-white rounded-full shadow-[0_0_8px_rgba(255,255,255,0.8)]"
+                        initial={{ x: -10, opacity: 0 }}
+                        animate={{ x: width + 10, opacity: [0, 1, 1, 0] }}
+                        transition={{
+                            duration: 0.6,
+                            repeat: Infinity,
+                            delay: p.delay,
+                            ease: "linear"
+                        }}
+                    />
+                ))}
+            </div>
+        </>
     );
 };
 
@@ -217,31 +241,64 @@ const TargetedFeedbackLoop = ({ active, type, delay = 0, height = 64 }) => {
     }));
 
     return (
-        <div
-            className="absolute left-1/2 -translate-x-1/2 w-px pointer-events-none overflow-hidden z-10"
-            style={{
-                height: height,
-                top: '100%',
-                background: 'linear-gradient(to bottom, rgba(255,255,255,0.1), rgba(255,255,255,0.05))'
-            }}
-        >
-            {active && particles.map((p) => (
-                <motion.div
-                    key={p.id}
-                    className={`absolute left-1/2 -translate-x-1/2 w-1 h-1 rounded-full shadow-sm
-            ${type === 'down' ? 'bg-blue-400' : 'bg-green-400'}
-          `}
-                    initial={{ y: type === 'down' ? -10 : height + 10, opacity: 0 }}
-                    animate={{ y: type === 'down' ? height + 10 : -10, opacity: [0, 1, 1, 0] }}
-                    transition={{
-                        duration: 1.2,
-                        repeat: Infinity,
-                        delay: p.delay,
-                        ease: "linear"
-                    }}
-                />
-            ))}
-        </div>
+        <>
+            {/* Horizontal feedback loop for mobile */}
+            <div
+                className="absolute top-1/2 -translate-y-1/2 h-px pointer-events-none overflow-hidden lg:hidden z-10"
+                style={{
+                    width: 80,
+                    left: type === 'down' ? '100%' : 'auto',
+                    right: type === 'up' ? '100%' : 'auto',
+                    background: type === 'down'
+                        ? 'linear-gradient(to right, rgba(255,255,255,0.1), rgba(255,255,255,0.05))'
+                        : 'linear-gradient(to left, rgba(255,255,255,0.1), rgba(255,255,255,0.05))'
+                }}
+            >
+                {active && particles.map((p) => (
+                    <motion.div
+                        key={`mobile-${p.id}`}
+                        className={`absolute top-1/2 -translate-y-1/2 w-1 h-1 rounded-full shadow-sm
+                            ${type === 'down' ? 'bg-blue-400' : 'bg-green-400'}
+                        `}
+                        initial={{ x: type === 'down' ? -10 : 90, opacity: 0 }}
+                        animate={{ x: type === 'down' ? 90 : -10, opacity: [0, 1, 1, 0] }}
+                        transition={{
+                            duration: 1.2,
+                            repeat: Infinity,
+                            delay: p.delay,
+                            ease: "linear"
+                        }}
+                    />
+                ))}
+            </div>
+
+            {/* Vertical feedback loop for desktop */}
+            <div
+                className="absolute left-1/2 -translate-x-1/2 w-px pointer-events-none overflow-hidden hidden lg:block z-10"
+                style={{
+                    height: height,
+                    top: '100%',
+                    background: 'linear-gradient(to bottom, rgba(255,255,255,0.1), rgba(255,255,255,0.05))'
+                }}
+            >
+                {active && particles.map((p) => (
+                    <motion.div
+                        key={`desktop-${p.id}`}
+                        className={`absolute left-1/2 -translate-x-1/2 w-1 h-1 rounded-full shadow-sm
+                            ${type === 'down' ? 'bg-blue-400' : 'bg-green-400'}
+                        `}
+                        initial={{ y: type === 'down' ? -10 : height + 10, opacity: 0 }}
+                        animate={{ y: type === 'down' ? height + 10 : -10, opacity: [0, 1, 1, 0] }}
+                        transition={{
+                            duration: 1.2,
+                            repeat: Infinity,
+                            delay: p.delay,
+                            ease: "linear"
+                        }}
+                    />
+                ))}
+            </div>
+        </>
     );
 };
 
@@ -256,7 +313,7 @@ const ActiveConnectionIndicator = () => (
 
 const AgentBadge = ({ label, active }) => (
     <motion.div
-        className={`px-3 py-1.5 border text-[10px] font-mono transition-all relative
+        className={`px-3 py-1.5 border text-[10px] font-mono transition-all relative w-full lg:w-auto text-center
       ${active ? 'bg-white/10 border-white/30 text-white' : 'bg-black border-white/10 text-gray-600'}
     `}
     >
